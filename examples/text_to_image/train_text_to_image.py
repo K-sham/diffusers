@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import subprocess
 import argparse
 import logging
 import math
@@ -570,7 +570,7 @@ def main():
     # Handle the repository creation
     if accelerator.is_main_process:
         if args.output_dir is not None:
-            os.makedirs(args.output_dir, exist_ok=True)
+            os.path.dirname(args.output_dir)
 
         if args.push_to_hub:
             repo_id = create_repo(
@@ -833,6 +833,8 @@ def main():
     )
 
     if args.use_ema:
+        subprocess.run('nvidia-smi')
+        print(accelerator.device)
         ema_unet.to(accelerator.device)
 
     # For mixed precision training we cast all non-trainable weights (vae, non-lora text_encoder and non-lora unet) to half-precision
